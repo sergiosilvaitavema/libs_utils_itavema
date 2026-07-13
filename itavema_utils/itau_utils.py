@@ -334,18 +334,28 @@ class ItauUtils:
             self._log.info(f"Removendo arquivo anterior: {caminho}")
             os.remove(caminho)
 
-    def _clicar_em_shadow(self, xpath: str, first: bool = False):
-        """Clica em elemento dentro de shadow DOM via Playwright locator (pierce automatico)."""
+    def _encontrar_locator(self, xpath: str):
+        """Busca elemento no main frame (CSS) e depois recursivamente em todos os iframes (XPath)."""
         css = self._xpath_para_css(xpath)
-        locator = self._browser.page.locator(f"css={css}")
-        if first:
-            locator = locator.first
-        locator.click()
+        loc = self._browser.page.locator(f"css={css}")
+        if loc.count() > 0:
+            return loc.first
+        for frame in self._browser.page.frames:
+            try:
+                loc = frame.locator(f"xpath={xpath}")
+                if loc.count() > 0:
+                    return loc.first
+            except Exception:
+                continue
+        raise Exception(f"Elemento nao encontrado em nenhum frame: {xpath}")
+
+    def _clicar_em_shadow(self, xpath: str, first: bool = False):
+        """Clica em elemento dentro de shadow DOM ou iframe via busca recursiva."""
+        self._encontrar_locator(xpath).click()
 
     def _hover_em_shadow(self, xpath: str):
-        """Passa mouse sobre elemento dentro de shadow DOM via Playwright locator."""
-        css = self._xpath_para_css(xpath)
-        self._browser.page.locator(f"css={css}").hover()
+        """Passa mouse sobre elemento dentro de shadow DOM ou iframe via busca recursiva."""
+        self._encontrar_locator(xpath).hover()
 
     @staticmethod
     def _xpath_para_css(xpath: str) -> str:
@@ -364,14 +374,12 @@ class ItauUtils:
         return s
 
     def _digitar_em_shadow(self, xpath: str, texto: str):
-        """Digita em input dentro de shadow DOM via Playwright locator."""
-        css = self._xpath_para_css(xpath)
-        self._browser.page.locator(f"css={css}").fill(texto)
+        """Digita em input dentro de shadow DOM ou iframe via busca recursiva."""
+        self._encontrar_locator(xpath).fill(texto)
 
     def _limpar_e_digitar(self, xpath: str, texto: str):
-        """Limpa o campo e digita o texto dentro de shadow DOM."""
-        css = self._xpath_para_css(xpath)
-        locator = self._browser.page.locator(f"css={css}")
+        """Limpa o campo e digita o texto dentro de shadow DOM ou iframe via busca recursiva."""
+        locator = self._encontrar_locator(xpath)
         locator.clear()
         time.sleep(0.5)
         locator.fill(texto)
