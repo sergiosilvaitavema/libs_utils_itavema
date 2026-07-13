@@ -138,6 +138,8 @@ class ItauUtils:
     # ---- trocar conta (shadow DOM) ----
 
     def _trocar_conta(self, numero_conta: str) -> bool:
+        self._browser.click(self._BTN_USER_MENU, recursive=True)
+
         self._log.info(f"Digitando conta: {numero_conta}")
         self._limpar_e_digitar(self._INPUT_SEARCH_ACCOUNT, numero_conta)
         time.sleep(4)
