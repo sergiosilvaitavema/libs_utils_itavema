@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "itavema-utils"
+version = "0.1.0"
+description = "Utilitarios para automacao de dealers Itavema"
+requires-python = ">=3.10"
+dependencies = [
+    "rpaflow",
+]
+
+[tool.setuptools.packages.find]
+include = ["itavema_utils*"]
