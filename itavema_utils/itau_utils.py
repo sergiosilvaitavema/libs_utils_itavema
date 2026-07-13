@@ -390,3 +390,6 @@ class ItauUtils:
                     time.sleep(intervalo)
         self._log.error(f"Nao foi possivel clicar em '{descricao}' apos {max_tentativas} tentativas.")
         return False
+
+    def _obter_browser(self) -> Browser:
+        return self._browser
