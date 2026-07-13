@@ -334,10 +334,13 @@ class ItauUtils:
             self._log.info(f"Removendo arquivo anterior: {caminho}")
             os.remove(caminho)
 
-    def _clicar_em_shadow(self, xpath: str):
+    def _clicar_em_shadow(self, xpath: str, first: bool = False):
         """Clica em elemento dentro de shadow DOM via Playwright locator (pierce automatico)."""
         css = self._xpath_para_css(xpath)
-        self._browser.page.locator(f"css={css}").click()
+        locator = self._browser.page.locator(f"css={css}")
+        if first:
+            locator = locator.first
+        locator.click()
 
     def _hover_em_shadow(self, xpath: str):
         """Passa mouse sobre elemento dentro de shadow DOM via Playwright locator."""
