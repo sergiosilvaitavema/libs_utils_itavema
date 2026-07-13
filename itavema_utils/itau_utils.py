@@ -337,9 +337,12 @@ class ItauUtils:
     def _encontrar_locator(self, xpath: str):
         """Busca elemento no main frame (CSS) e depois recursivamente em todos os iframes (XPath)."""
         css = self._xpath_para_css(xpath)
-        loc = self._browser.page.locator(f"css={css}")
-        if loc.count() > 0:
-            return loc.first
+        try:
+            loc = self._browser.page.locator(f"css={css}")
+            if loc.count() > 0:
+                return loc.first
+        except Exception:
+            pass
         for frame in self._browser.page.frames:
             try:
                 loc = frame.locator(f"xpath={xpath}")
