@@ -354,11 +354,15 @@ class ItauUtils:
 
     def _clicar_em_shadow(self, xpath: str, first: bool = False):
         """Clica em elemento dentro de shadow DOM ou iframe via busca recursiva."""
-        self._encontrar_locator(xpath).click()
+        locator = self._encontrar_locator(xpath)
+        locator.wait_for(state="visible", timeout=10000)
+        locator.click()
 
     def _hover_em_shadow(self, xpath: str):
         """Passa mouse sobre elemento dentro de shadow DOM ou iframe via busca recursiva."""
-        self._encontrar_locator(xpath).hover()
+        locator = self._encontrar_locator(xpath)
+        locator.wait_for(state="visible", timeout=10000)
+        locator.hover()
 
     @staticmethod
     def _xpath_para_css(xpath: str) -> str:
