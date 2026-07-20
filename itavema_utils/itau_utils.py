@@ -378,7 +378,15 @@ class ItauUtils:
 
     def _digitar_em_shadow(self, xpath: str, texto: str):
         """Digita em input dentro de shadow DOM ou iframe via busca recursiva."""
-        self._encontrar_locator(xpath).fill(texto)
+        locator = self._encontrar_locator(xpath)
+        locator.wait_for(state="visible", timeout=10000)
+        locator.fill(texto)
+        
+    def _digitar_em_shadow_nature(self, xpath: str, texto: str):
+        """Digita em input dentro de shadow DOM ou iframe via busca recursiva."""
+        locator = self._encontrar_locator(xpath)
+        locator.wait_for(state="visible", timeout=10000)
+        locator.type(texto)        
 
     def _limpar_e_digitar(self, xpath: str, texto: str):
         """Limpa o campo e digita o texto dentro de shadow DOM ou iframe via busca recursiva."""
